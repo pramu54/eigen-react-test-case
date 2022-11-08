@@ -1,27 +1,17 @@
 import { Card } from 'antd';
 import { CardType } from './types/CardTypes';
 import "antd/lib/card/style/index.css";
+import moment from 'moment';
 
-const NewsCard = ({author, title, description, imgUrl, url, publishedAt}: CardType) => {
-    const { Meta } = Card;
-
+const NewsCard = ({title, description, url, publishedAt}: CardType) => {
+    const date = moment(publishedAt).format('DD MMM, YYYY');
     return(
         <>
             <Card 
-                cover={
-                    <img
-                        alt={imgUrl}
-                        src={imgUrl}
-                    />
-                }
-                title={author} 
+                title={date} 
                 extra={<a href='#'>More</a>} 
                 style={{ width: 300 }}
             >
-                {/* <Meta
-                    title={author}
-                    description={title}
-                /> */}
                 <h3>{title}</h3>
                 <p>{description}</p>
                 <br/>
