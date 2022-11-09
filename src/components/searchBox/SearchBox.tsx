@@ -1,19 +1,14 @@
 import { Input, Space } from 'antd';
-import "antd/lib/input/style/index.css";
-import { KeyboardEventHandler } from 'react';
+// import "antd/lib/input/style/index.css";
+import { searchType } from './type/SearchBoxTypes';
 
 const { Search } = Input;
 
-export type searchType = {
-    onChange: (e: React.ChangeEvent<HTMLInputElement>)=>void,
-    onPressEnter: KeyboardEventHandler
-}
-
-const SearchBox = ({onChange, onPressEnter}: searchType) => {
+const SearchBox = ({onChange, onPressEnter, onSearch}: searchType) => {
     return(
         <>
             <Space direction="vertical">
-                <Search placeholder="input search text" allowClear onChange={onChange} onPressEnter={onPressEnter} style={{ width: 200 }} />
+                <Search placeholder="Please enter a keyword" allowClear onChange={onChange} onPressEnter={onPressEnter} onSearch={onSearch} style={{ width: 500 }} />
             </Space>
         </>
     )

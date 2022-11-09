@@ -1,28 +1,26 @@
 import { Menu, MenuProps } from "antd";
 import { useState } from "react";
 import "antd/lib/menu/style/index.css";
+import { useNavigate } from "react-router-dom";
 
 const items: MenuProps['items'] = [
     {
         label: 'All',
-        key: 'all',
+        key: '',
     },
     {
         label: 'Top Headlines',
-        key: 'top',
-    },
-    {
-        label: 'Sources',
-        key: 'source',
+        key: 'headlines',
     },
 ];
 
 const MenuBar = () => {
     const [current, setCurrent] = useState('all');
+    const navigate = useNavigate();
 
     const onClick: MenuProps['onClick'] = e => {
-        console.log('click ', e);
         setCurrent(e.key);
+        navigate(`/${e.key}`);
     };
 
     return(

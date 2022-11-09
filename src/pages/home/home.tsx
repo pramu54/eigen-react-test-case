@@ -1,19 +1,25 @@
+import { Col, Row } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NewsCard from "../../components/card/Card";
 import SearchBox from "../../components/searchBox/SearchBox";
-import "./style/home.css";
+import "antd/lib/grid/style/index.css";
 import { articleType } from "./type/homeType";
+import SelectBox from "../../components/select/SelectBox";
+import "antd/lib/select/style/index.css";
+import "antd/lib/dropdown/style/index.css";
 
 const Home = () => {
     const[article, setArticle] = useState<articleType>();
-    const[keyword, setKeyword] = useState<string>("Indonesia");
+    const[keyword, setKeyword] = useState<string>("");
+    const[sortBy, setSortBy] = useState<string>("relevancy");
 
     const fetchData = async() => {
         await axios
         .get(`/everything`, {
             params: {
-                q: keyword
+                q: keyword,
+                sortBy: sortBy,
             },
             headers : {
                 Authorization : "Bearer 9ce0ada1c9a74582943dc0072add55be"
@@ -27,36 +33,85 @@ const Home = () => {
         });
     };
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, [keyword]);
-
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setKeyword(value);
     }
 
-    const onPressEnter = () => {
-        fetchData();
+    const onSearch = () => {
+        if(keyword!==""){
+            fetchData();
+        }
     }
 
-    if(article !== null){
+    const handleChange = (value: string) => {
+        setSortBy(value);
+        if(article!==undefined){
+            fetchData();
+        }
+    }
+
+    const options = [
+        {
+        value: 'relevancy',
+        label: 'Relevancy',
+        },
+        {
+        value: 'popularity',
+        label: 'Popularity',
+        },
+        {
+        value: 'publishedAt',
+        label: 'Date',
+        }
+    ]
+
+    if(article !== undefined && keyword !== null){
     return(
-        <>
-            <SearchBox onChange={onChange} onPressEnter={onPressEnter}/>
-            {article?.articles.map((item, index)=>(
-                <NewsCard 
-                    key={index} 
-                    title={item.title} 
-                    description={item.description} 
-                    url={item.url} 
-                    publishedAt={item.publishedAt} 
-                />
-            ))}
+        <>  <div className="site-layout-content">
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '30px'}}>
+                    <h1>All News</h1>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '30px'}}>
+                    <div style={{marginRight: '30px'}}>
+                        <SearchBox onChange={onChange} onPressEnter={onSearch} onSearch={onSearch}/>
+                    </div>
+                    <SelectBox handleChange={handleChange} options={options} placeholder="Sort By"/>
+                </div>
+                
+                <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, { xs: 8, sm: 16, md: 24, lg: 32 }]} style={{padding: '35px'}}>
+                    {article?.articles.map((item, index)=>(
+                        <Col className="gutter-row" span={6} key={index}>
+                            <NewsCard  
+                                title={item.title} 
+                                description={item.content} 
+                                url={item.url}
+                                imgUrl={item.urlToImage}
+                                publishedAt={item.publishedAt} 
+                            />
+                        </Col>
+                    ))}
+                </Row>
+            </div>
         </>
     )}
     else {
-        return <>Fill in Keyword</>
+        return (
+            <>
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '30px'}}>
+                    <h1>All News</h1>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: '30px'}}>
+                    <div style={{marginRight: '30px'}}>
+                        <SearchBox onChange={onChange} onPressEnter={onSearch} onSearch={onSearch}/>
+                    </div>
+                    <SelectBox handleChange={handleChange} options={options} placeholder="Sort By"/>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '30px'}}>
+                    <h1>Please Enter a keyword</h1>
+                </div>
+            </>
+        )
     }
 }
 export default Home;

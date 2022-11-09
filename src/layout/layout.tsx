@@ -15,7 +15,7 @@ const LayoutProvider = ({content}: {content: ReactNode}) => {
                     <MenuBar />
                 </Header>
                 <Content>
-                    <div className="site-layout-content">
+                    <div className="site-layout-content" style={{minHeight: '100vh'}}>
                         {content}
                     </div>
                 </Content>
